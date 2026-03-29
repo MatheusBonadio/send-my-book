@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'adapters/auth/firebase_auth_adapter.dart';
+import 'adapters/book/local_book_adapter.dart';
 import 'firebase_options.dart';
 import 'providers/auth_provider.dart';
 import 'providers/book_provider.dart';
@@ -23,8 +25,17 @@ class SendMyBookApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProvider(create: (_) => BookProvider()),
+        // Injeção dos adapters concretos nos providers.
+        // Para trocar Firebase por outra solução de auth, basta
+        // substituir FirebaseAuthAdapter por outro AuthDataSource.
+        ChangeNotifierProvider(
+          create: (_) => AuthProvider(FirebaseAuthAdapter()),
+        ),
+        // Para usar Firestore ou SQLite, basta trocar LocalBookAdapter
+        // por outro BookDataSource sem alterar BookProvider.
+        ChangeNotifierProvider(
+          create: (_) => BookProvider(LocalBookAdapter()),
+        ),
       ],
       child: MaterialApp(
         title: 'Send My Book',
