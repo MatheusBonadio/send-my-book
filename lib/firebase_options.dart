@@ -1,13 +1,12 @@
-// ATENÇÃO: Este arquivo precisa ser configurado com suas credenciais do Firebase.
+// Gerado a partir de variáveis de ambiente injetadas em tempo de build.
 //
-// Passos para configurar:
-// 1. Acesse https://console.firebase.google.com e crie um projeto
-// 2. Ative a autenticação por E-mail/Senha em Authentication > Sign-in method
-// 3. Instale o FlutterFire CLI: dart pub global activate flutterfire_cli
-// 4. Execute: flutterfire configure
-//    Isso irá substituir este arquivo com suas credenciais reais.
+// Para rodar o app, use:
+//   flutter run --dart-define-from-file=.env.json
 //
-// Alternativamente, substitua os valores "TODO" abaixo com os dados do seu projeto Firebase.
+// Para gerar um build:
+//   flutter build apk --dart-define-from-file=.env.json
+//
+// Copie .env.example.json → .env.json e preencha com os dados do seu projeto Firebase.
 
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
@@ -15,9 +14,7 @@ import 'package:flutter/foundation.dart'
 
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
-    if (kIsWeb) {
-      return web;
-    }
+    if (kIsWeb) return web;
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
         return android;
@@ -31,28 +28,28 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'TODO-WEB-API-KEY',
-    appId: 'TODO-WEB-APP-ID',
-    messagingSenderId: 'TODO-SENDER-ID',
-    projectId: 'TODO-PROJECT-ID',
-    authDomain: 'TODO-PROJECT-ID.firebaseapp.com',
-    storageBucket: 'TODO-PROJECT-ID.appspot.com',
+    apiKey: String.fromEnvironment('FIREBASE_API_KEY_WEB'),
+    appId: String.fromEnvironment('FIREBASE_APP_ID_WEB'),
+    messagingSenderId: String.fromEnvironment('FIREBASE_MESSAGING_SENDER_ID'),
+    projectId: String.fromEnvironment('FIREBASE_PROJECT_ID'),
+    authDomain: String.fromEnvironment('FIREBASE_AUTH_DOMAIN'),
+    storageBucket: String.fromEnvironment('FIREBASE_STORAGE_BUCKET'),
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'TODO-ANDROID-API-KEY',
-    appId: 'TODO-ANDROID-APP-ID',
-    messagingSenderId: 'TODO-SENDER-ID',
-    projectId: 'TODO-PROJECT-ID',
-    storageBucket: 'TODO-PROJECT-ID.appspot.com',
+    apiKey: String.fromEnvironment('FIREBASE_API_KEY_ANDROID'),
+    appId: String.fromEnvironment('FIREBASE_APP_ID_ANDROID'),
+    messagingSenderId: String.fromEnvironment('FIREBASE_MESSAGING_SENDER_ID'),
+    projectId: String.fromEnvironment('FIREBASE_PROJECT_ID'),
+    storageBucket: String.fromEnvironment('FIREBASE_STORAGE_BUCKET'),
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'TODO-IOS-API-KEY',
-    appId: 'TODO-IOS-APP-ID',
-    messagingSenderId: 'TODO-SENDER-ID',
-    projectId: 'TODO-PROJECT-ID',
-    storageBucket: 'TODO-PROJECT-ID.appspot.com',
-    iosBundleId: 'com.example.sendMyBook',
+    apiKey: String.fromEnvironment('FIREBASE_API_KEY_IOS'),
+    appId: String.fromEnvironment('FIREBASE_APP_ID_IOS'),
+    messagingSenderId: String.fromEnvironment('FIREBASE_MESSAGING_SENDER_ID'),
+    projectId: String.fromEnvironment('FIREBASE_PROJECT_ID'),
+    storageBucket: String.fromEnvironment('FIREBASE_STORAGE_BUCKET'),
+    iosBundleId: String.fromEnvironment('FIREBASE_IOS_BUNDLE_ID'),
   );
 }
