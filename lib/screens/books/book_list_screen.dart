@@ -20,13 +20,12 @@ class _BookListScreenState extends State<BookListScreen> {
   @override
   Widget build(BuildContext context) {
     final bookProvider = context.watch<BookProvider>();
+    final allBooks = bookProvider.books;
     final library = bookProvider.library;
 
     final filtered = _selectedFilter == null
-        ? library
-        : library
-            .where((b) => b.status == _selectedFilter)
-            .toList();
+        ? allBooks
+        : library.where((b) => b.status == _selectedFilter).toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -35,7 +34,7 @@ class _BookListScreenState extends State<BookListScreen> {
           Padding(
             padding: const EdgeInsets.only(right: 8),
             child: Text(
-              '${library.length} livro${library.length != 1 ? 's' : ''}',
+              '${allBooks.length} livro${allBooks.length != 1 ? 's' : ''}',
               style: const TextStyle(
                 color: AppTheme.textSecondary,
                 fontSize: 13,

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../providers/auth_provider.dart';
 import '../../theme/app_theme.dart';
 import '../books/book_list_screen.dart';
 import '../wishlist/wishlist_screen.dart';
 import '../about/about_screen.dart';
+import '../profile/profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,32 +19,8 @@ class _HomeScreenState extends State<HomeScreen> {
     BookListScreen(),
     WishlistScreen(),
     AboutScreen(),
+    ProfileScreen(),
   ];
-
-  void _confirmSignOut() {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Sair'),
-        content: const Text('Deseja encerrar sua sessão?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Cancelar'),
-          ),
-          TextButton(
-            style: TextButton.styleFrom(foregroundColor: AppTheme.error),
-            onPressed: () {
-              Navigator.of(ctx).pop();
-              context.read<AuthProvider>().signOut();
-            },
-            child: const Text('Sair'),
-          ),
-        ],
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,13 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         child: BottomNavigationBar(
           currentIndex: _currentIndex,
-          onTap: (index) {
-            if (index == 2 && _currentIndex == 2) {
-              _confirmSignOut();
-              return;
-            }
-            setState(() => _currentIndex = index);
-          },
+          onTap: (index) => setState(() => _currentIndex = index),
           items: const [
             BottomNavigationBarItem(
               icon: Icon(Icons.library_books_outlined),
@@ -82,6 +51,11 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: Icon(Icons.info_outline_rounded),
               activeIcon: Icon(Icons.info_rounded),
               label: 'Sobre',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person_outline_rounded),
+              activeIcon: Icon(Icons.person_rounded),
+              label: 'Perfil',
             ),
           ],
         ),

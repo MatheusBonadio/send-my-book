@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../models/book.dart';
 import '../../providers/book_provider.dart';
 import '../../theme/app_theme.dart';
+import '../../widgets/book_cover.dart';
 import 'edit_book_screen.dart';
 
 class BookDetailScreen extends StatelessWidget {
@@ -13,13 +14,13 @@ class BookDetailScreen extends StatelessWidget {
   Color _statusColor(ReadingStatus status) {
     switch (status) {
       case ReadingStatus.reading:
-        return Colors.blue.shade600;
+        return AppTheme.statusReading;
       case ReadingStatus.read:
-        return Colors.green.shade600;
+        return AppTheme.statusRead;
       case ReadingStatus.unread:
-        return AppTheme.textSecondary;
+        return AppTheme.statusUnread;
       case ReadingStatus.wishlist:
-        return AppTheme.secondary;
+        return AppTheme.statusWishlist;
     }
   }
 
@@ -46,11 +47,13 @@ class BookDetailScreen extends StatelessWidget {
     );
 
     if (confirmed == true && context.mounted) {
-      context.read<BookProvider>().deleteBook(book.id);
-      Navigator.of(context).pop();
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Livro removido.')),
-      );
+      await context.read<BookProvider>().deleteBook(book.id);
+      if (context.mounted) {
+        Navigator.of(context).pop();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Livro removido.')),
+        );
+      }
     }
   }
 
@@ -93,26 +96,11 @@ class BookDetailScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Center(
-              child: Container(
-                width: 100,
-                height: 136,
-                decoration: BoxDecoration(
-                  color: AppTheme.primary.withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppTheme.divider),
-                ),
-                child: Center(
-                  child: Text(
-                    book.title.isNotEmpty
-                        ? book.title[0].toUpperCase()
-                        : '?',
-                    style: const TextStyle(
-                      fontSize: 48,
-                      fontWeight: FontWeight.w700,
-                      color: AppTheme.primary,
-                    ),
-                  ),
-                ),
+              child: BookCoverWidget(
+                book: book,
+                width: 120,
+                height: 160,
+                animate: true,
               ),
             ),
             const SizedBox(height: 24),
@@ -153,6 +141,12 @@ class BookDetailScreen extends StatelessWidget {
                   _InfoChip(
                     icon: Icons.calendar_today_outlined,
                     label: book.publishYear.toString(),
+                    color: AppTheme.textSecondary,
+                  ),
+                if (book.isbn != null)
+                  _InfoChip(
+                    icon: Icons.qr_code_outlined,
+                    label: 'ISBN ${book.isbn!}',
                     color: AppTheme.textSecondary,
                   ),
               ],
@@ -249,13 +243,16 @@ class _StatusButtons extends StatelessWidget {
       runSpacing: 8,
       children: statuses.map((s) {
         final isActive = book.status == s.$1;
-        return ActionChip(
+        return FilterChip(
           avatar: Icon(s.$3,
               size: 16,
               color: isActive ? AppTheme.onPrimary : AppTheme.textSecondary),
           label: Text(s.$2),
-          backgroundColor:
-              isActive ? AppTheme.primary : AppTheme.background,
+          selected: isActive,
+          selectedColor: AppTheme.primary,
+          backgroundColor: AppTheme.background,
+          checkmarkColor: Colors.transparent,
+          showCheckmark: false,
           labelStyle: TextStyle(
             color: isActive ? AppTheme.onPrimary : AppTheme.textSecondary,
             fontSize: 13,
@@ -263,16 +260,18 @@ class _StatusButtons extends StatelessWidget {
           ),
           side: BorderSide(
               color: isActive ? AppTheme.primary : AppTheme.divider),
-          onPressed: isActive
+          onSelected: isActive
               ? null
-              : () {
-                  context
+              : (_) async {
+                  await context
                       .read<BookProvider>()
                       .updateStatus(book.id, s.$1);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                        content: Text('Status atualizado: ${s.$2}')),
-                  );
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          content: Text('Status atualizado: ${s.$2}')),
+                    );
+                  }
                 },
         );
       }).toList(),

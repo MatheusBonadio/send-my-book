@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../models/app_user.dart';
 import 'auth_data_source.dart';
@@ -5,18 +6,19 @@ import 'auth_data_source.dart';
 /// Adapter concreto que traduz a interface do [FirebaseAuth] (adaptee)
 /// para a interface [AuthDataSource] (alvo) esperada pelo [AuthProvider].
 ///
-/// Toda dependência do Firebase Auth fica confinada aqui.
+/// Ao cadastrar, persiste o perfil do usuário em `users/{uid}` no Firestore.
 class FirebaseAuthAdapter implements AuthDataSource {
   final FirebaseAuth _firebaseAuth;
+  final FirebaseFirestore _firestore;
 
-  FirebaseAuthAdapter({FirebaseAuth? firebaseAuth})
-      : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance;
+  FirebaseAuthAdapter({FirebaseAuth? firebaseAuth, FirebaseFirestore? firestore})
+      : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
+        _firestore = firestore ?? FirebaseFirestore.instance;
 
   @override
   Stream<AppUser?> get authStateChanges =>
       _firebaseAuth.authStateChanges().map(_toAppUser);
 
-  /// Converte o [User] do Firebase no modelo de domínio [AppUser].
   AppUser? _toAppUser(User? user) {
     if (user == null) return null;
     return AppUser(
@@ -51,7 +53,16 @@ class FirebaseAuthAdapter implements AuthDataSource {
         email: email.trim(),
         password: password,
       );
-      await credential.user?.updateDisplayName(name.trim());
+      final user = credential.user!;
+      await user.updateDisplayName(name.trim());
+
+      await _firestore.collection('users').doc(user.uid).set({
+        'displayName': name.trim(),
+        'email': email.trim(),
+        'phone': phone.trim(),
+        'createdAt': DateTime.now().toIso8601String(),
+      });
+
       return null;
     } on FirebaseAuthException catch (e) {
       return _mapError(e.code);
@@ -71,7 +82,6 @@ class FirebaseAuthAdapter implements AuthDataSource {
   @override
   Future<void> signOut() => _firebaseAuth.signOut();
 
-  /// Mapeia códigos de erro do Firebase para mensagens em português.
   String _mapError(String code) {
     switch (code) {
       case 'user-not-found':

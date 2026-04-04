@@ -6,9 +6,11 @@ import '../../models/book.dart';
 /// implementação concreta (local, Firestore, SQLite, etc.) sem
 /// alterar a camada de estado.
 abstract class BookDataSource {
-  List<Book> getAll();
-  void add(Book book);
-  void update(Book book);
-  void delete(String id);
+  /// Emite a lista de livros e re-emite a cada alteração.
+  Stream<List<Book>> watchAll();
+  Future<bool> exists(String id);
+  Future<void> add(Book book);
+  Future<void> update(Book book);
+  Future<void> delete(String id);
   String generateId();
 }

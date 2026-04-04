@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/book.dart';
 import '../theme/app_theme.dart';
+import 'book_cover.dart';
 
 class BookCard extends StatelessWidget {
   final Book book;
@@ -11,13 +12,13 @@ class BookCard extends StatelessWidget {
   Color get _statusColor {
     switch (book.status) {
       case ReadingStatus.reading:
-        return Colors.blue.shade600;
+        return AppTheme.statusReading;
       case ReadingStatus.read:
-        return Colors.green.shade600;
+        return AppTheme.statusRead;
       case ReadingStatus.unread:
-        return AppTheme.textSecondary;
+        return AppTheme.statusUnread;
       case ReadingStatus.wishlist:
-        return AppTheme.secondary;
+        return AppTheme.statusWishlist;
     }
   }
 
@@ -45,26 +46,7 @@ class BookCard extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(
             children: [
-              Container(
-                width: 48,
-                height: 64,
-                decoration: BoxDecoration(
-                  color: AppTheme.primary.withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Center(
-                  child: Text(
-                    book.title.isNotEmpty
-                        ? book.title[0].toUpperCase()
-                        : '?',
-                    style: const TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w700,
-                      color: AppTheme.primary,
-                    ),
-                  ),
-                ),
-              ),
+              BookCoverWidget(book: book, width: 48, height: 64),
               const SizedBox(width: 14),
               Expanded(
                 child: Column(

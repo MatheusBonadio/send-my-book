@@ -23,7 +23,9 @@ class _EditBookScreenState extends State<EditBookScreen> {
   late final TextEditingController _descriptionController;
   late final TextEditingController _genreController;
   late final TextEditingController _yearController;
+  late final TextEditingController _isbnController;
   late ReadingStatus _status;
+  bool _isSaving = false;
 
   @override
   void initState() {
@@ -36,6 +38,7 @@ class _EditBookScreenState extends State<EditBookScreen> {
     _genreController = TextEditingController(text: b.genre ?? '');
     _yearController =
         TextEditingController(text: b.publishYear?.toString() ?? '');
+    _isbnController = TextEditingController(text: b.isbn ?? '');
     _status = b.status;
   }
 
@@ -46,11 +49,14 @@ class _EditBookScreenState extends State<EditBookScreen> {
     _descriptionController.dispose();
     _genreController.dispose();
     _yearController.dispose();
+    _isbnController.dispose();
     super.dispose();
   }
 
-  void _save() {
+  Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
+
+    setState(() => _isSaving = true);
 
     final updated = widget.book.copyWith(
       title: _titleController.text.trim(),
@@ -65,10 +71,14 @@ class _EditBookScreenState extends State<EditBookScreen> {
           ? null
           : int.tryParse(_yearController.text.trim()),
       status: _status,
+      isbn: _isbnController.text.trim().isEmpty
+          ? null
+          : _isbnController.text.trim(),
     );
 
-    context.read<BookProvider>().updateBook(updated);
+    await context.read<BookProvider>().updateBook(updated);
 
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Livro atualizado com sucesso!')),
     );
@@ -146,6 +156,24 @@ class _EditBookScreenState extends State<EditBookScreen> {
                 ),
                 const SizedBox(height: 16),
                 CustomTextField(
+                  label: 'ISBN',
+                  controller: _isbnController,
+                  hint: 'Ex: 9788550800653',
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(13),
+                  ],
+                  validator: (value) {
+                    if (value != null && value.isNotEmpty &&
+                        value.length != 10 && value.length != 13) {
+                      return 'ISBN deve ter 10 ou 13 dígitos';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                CustomTextField(
                   label: 'Descrição',
                   controller: _descriptionController,
                   maxLines: 4,
@@ -167,8 +195,14 @@ class _EditBookScreenState extends State<EditBookScreen> {
                 ),
                 const SizedBox(height: 32),
                 ElevatedButton(
-                  onPressed: _save,
-                  child: const Text('Salvar alterações'),
+                  onPressed: _isSaving ? null : _save,
+                  child: _isSaving
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Text('Salvar alterações'),
                 ),
                 const SizedBox(height: 24),
               ],

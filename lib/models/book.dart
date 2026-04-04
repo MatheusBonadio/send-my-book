@@ -24,6 +24,13 @@ class Book {
   final int? publishYear;
   final ReadingStatus status;
   final DateTime addedAt;
+  final String? coverUrl;
+  final String? isbn;
+  final int? spineColor;
+
+  /// Indica se o livro está na biblioteca pessoal do usuário.
+  /// Campo runtime — não é persistido no Firestore.
+  final bool inLibrary;
 
   const Book({
     required this.id,
@@ -34,6 +41,10 @@ class Book {
     this.publishYear,
     this.status = ReadingStatus.unread,
     required this.addedAt,
+    this.coverUrl,
+    this.isbn,
+    this.spineColor,
+    this.inLibrary = true,
   });
 
   Book copyWith({
@@ -43,6 +54,10 @@ class Book {
     String? genre,
     int? publishYear,
     ReadingStatus? status,
+    String? coverUrl,
+    String? isbn,
+    int? spineColor,
+    bool? inLibrary,
   }) {
     return Book(
       id: id,
@@ -53,6 +68,42 @@ class Book {
       publishYear: publishYear ?? this.publishYear,
       status: status ?? this.status,
       addedAt: addedAt,
+      coverUrl: coverUrl ?? this.coverUrl,
+      isbn: isbn ?? this.isbn,
+      spineColor: spineColor ?? this.spineColor,
+      inLibrary: inLibrary ?? this.inLibrary,
     );
   }
+
+  Map<String, dynamic> toMap() => {
+        'title': title,
+        'author': author,
+        if (description != null) 'description': description,
+        if (genre != null) 'genre': genre,
+        if (publishYear != null) 'publishYear': publishYear,
+        'status': status.name,
+        'addedAt': addedAt.toIso8601String(),
+        if (coverUrl != null) 'coverUrl': coverUrl,
+        if (isbn != null) 'isbn': isbn,
+        if (spineColor != null) 'spineColor': spineColor,
+      };
+
+  factory Book.fromMap(String id, Map<String, dynamic> map) => Book(
+        id: id,
+        title: map['title'] as String? ?? '',
+        author: map['author'] as String? ?? '',
+        description: map['description'] as String?,
+        genre: map['genre'] as String?,
+        publishYear: map['publishYear'] as int?,
+        status: ReadingStatus.values.firstWhere(
+          (s) => s.name == map['status'],
+          orElse: () => ReadingStatus.unread,
+        ),
+        addedAt: DateTime.tryParse(map['addedAt'] as String? ?? '') ??
+            DateTime.now(),
+        coverUrl: map['coverUrl'] as String?,
+        isbn: map['isbn'] as String?,
+        spineColor: map['spineColor'] as int?,
+        inLibrary: map['inLibrary'] as bool? ?? true,
+      );
 }

@@ -1,15 +1,23 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  static const Color primary = Color(0xFF3D2B1F);
-  static const Color secondary = Color(0xFFD4A85A);
-  static const Color background = Color(0xFFFAF8F5);
+  // Paleta principal
+  static const Color primary = Color(0xFF343D37);
+  static const Color secondary = Color(0xFF9E504D);
+  static const Color accent = Color(0xFF35DE6D);
+  static const Color background = Color(0xFFF4F6F4);
   static const Color surface = Color(0xFFFFFFFF);
-  static const Color error = Color(0xFFB00020);
+  static const Color error = Color(0xFFDE3B35);
   static const Color onPrimary = Color(0xFFFFFFFF);
-  static const Color onBackground = Color(0xFF1A1A1A);
-  static const Color textSecondary = Color(0xFF757575);
-  static const Color divider = Color(0xFFE8E8E8);
+  static const Color onBackground = Color(0xFF343D37);
+  static const Color textSecondary = Color(0xFF5E4746);
+  static const Color divider = Color(0xFFE2E6E2);
+
+  // Status de leitura
+  static const Color statusRead = Color(0xFF35DE6D);
+  static const Color statusReading = Color(0xFF4E8A62);
+  static const Color statusUnread = Color(0xFF5E4746);
+  static const Color statusWishlist = Color(0xFF9E504D);
 
   static ThemeData get theme => ThemeData(
         useMaterial3: true,
@@ -86,8 +94,7 @@ class AppTheme {
             borderRadius: BorderRadius.circular(12),
             borderSide: const BorderSide(color: error, width: 1.5),
           ),
-          labelStyle:
-              const TextStyle(color: textSecondary, fontSize: 14),
+          labelStyle: const TextStyle(color: textSecondary, fontSize: 14),
           hintStyle: TextStyle(
               color: textSecondary.withValues(alpha: 0.6), fontSize: 14),
         ),
@@ -131,8 +138,7 @@ class AppTheme {
           backgroundColor: background,
           selectedColor: primary.withValues(alpha: 0.1),
           labelStyle: const TextStyle(fontSize: 12),
-          padding:
-              const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
             side: const BorderSide(color: divider),

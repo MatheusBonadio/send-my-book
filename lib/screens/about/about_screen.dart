@@ -91,9 +91,8 @@ class AboutScreen extends StatelessWidget {
               title: 'Equipe de Desenvolvimento',
               child: Column(
                 children: const [
-                  _MemberItem(name: 'Integrante 1', role: 'Desenvolvedor'),
-                  _MemberItem(name: 'Integrante 2', role: 'Desenvolvedor'),
-                  _MemberItem(name: 'Integrante 3', role: 'Desenvolvedor'),
+                  _MemberItem(name: 'Matheus Lima Bonadio', role: 'Desenvolvedor'),
+                  _MemberItem(name: 'Vitor Moreira Nascimento', role: 'Desenvolvedor'),
                 ],
               ),
             ),
@@ -103,9 +102,9 @@ class AboutScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: const [
-                  _InfoRow(label: 'Disciplina', value: 'Desenvolvimento Mobile'),
-                  _InfoRow(label: 'Instituição', value: 'Nome da Instituição'),
-                  _InfoRow(label: 'Professor', value: 'Nome do Professor'),
+                  _InfoRow(label: 'Disciplina', value: 'Programação Mobile II (20261_AC622B)'),
+                  _InfoRow(label: 'Professor', value: 'Dr. Samuel Zanferdini Oliva'),
+                  _InfoRow(label: 'Instituição', value: 'Universidade de Ribeirão Preto'),
                 ],
               ),
             ),
