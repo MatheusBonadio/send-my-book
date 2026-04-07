@@ -10,6 +10,8 @@
 
 **Send My Book** é um aplicativo de gerenciamento de biblioteca pessoal que permite aos usuários organizar, acompanhar e descobrir livros. O sistema integra a API do Open Library para busca de livros e utiliza Firebase como backend para autenticação e armazenamento em nuvem.
 
+<img src='https://i.imgur.com/akheDz8.png'>
+
 ### ✨ Principais Funcionalidades
 
 #### Para o Leitor
